@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 34a2ef8de45a44b24a3db0cf62538fce
+timeCreated: 1463570632
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 63173
+  packageName: Block Breaker Template
+  packageVersion: 1.0
+  assetPath: Assets/BlockBreakerTemplate/Scripts/Brick.cs
+  uploadId: 120133

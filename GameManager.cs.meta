@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: f7abcda59827d46af934b0915f86ca58
+timeCreated: 1463570480
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 63173
+  packageName: Block Breaker Template
+  packageVersion: 1.0
+  assetPath: Assets/BlockBreakerTemplate/Scripts/GameManager.cs
+  uploadId: 120133
