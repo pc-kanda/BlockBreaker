@@ -4,32 +4,32 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour 
 {
-	public int score;				//The player's current score
-	public int lives;				//The amount of lives the player has remaining
-	public int ballSpeedIncrement;	//The amount of speed the ball will increase by everytime it hits a brick
-	public bool gameOver;			//Set true when the game is over
-	public bool wonGame;			//Set true when the game has been won
+	public int score;				// プレイヤーの現在のスコア
+	public int lives;				// プレイヤーの残りライフ数
+	public int ballSpeedIncrement;	// ボールがブロックに当たるたびに増加するスピード量
+	public bool gameOver;			// ゲームオーバー時に true になる
+	public bool wonGame;			// ゲームクリア時に true になる
 
-	public GameObject paddle;		//The paddle game object
-	public GameObject ball;			//The ball game object
+	public GameObject paddle;		// パドルのゲームオブジェクト
+	public GameObject ball;			// ボールのゲームオブジェクト
 
-	public GameUI gameUI;			//The GameUI class
+	public GameUI gameUI;			// GameUI クラス
 
-	//Prefabs
-	public GameObject brickPrefab;	//The prefab of the Brick game object which will be spawned
+	// プレハブ
+	public GameObject brickPrefab;	// 生成されるブロックのプレハブ
 
-	public List<GameObject> bricks = new List<GameObject>();	//List of all the bricks currently on the screen
-	public int brickCountX;										//The amount of bricks that will be spawned horizontally (Odd numbers are recommended)
-	public int brickCountY;										//The amount of bricks that will be spawned vertically
+	public List<GameObject> bricks = new List<GameObject>();	// 現在画面上に存在するすべてのブロックのリスト
+	public int brickCountX;										// 横方向に生成されるブロックの数（奇数推奨）
+	public int brickCountY;										// 縦方向に生成されるブロックの数
 
-	public Color[] colors;			//The color array of the bricks. This can be modified to create different brick color patterns
+	public Color[] colors;			// ブロックの色配列（色の並びパターンを変更できる）
 
 	void Start ()
 	{
-		StartGame(); //Starts the game by setting values and spawning bricks
+		StartGame(); // 値の初期化とブロック生成を行い、ゲームを開始する
 	}
 
-	//Called when the game starts
+	// ゲーム開始時に呼ばれる
 	public void StartGame ()
 	{
 		score = 0;
@@ -42,54 +42,54 @@ public class GameManager : MonoBehaviour
 		CreateBrickArray();
 	}
 
-	//Spawns the bricks and sets their colours
+	// ブロックを生成し、色を設定する
 	public void CreateBrickArray ()
 	{
-		int colorId = 0;					//'colorId' is used to tell which color is currently being used on the bricks. Increased by 1 every row of bricks
+		int colorId = 0;	// 現在使用している色を示すID（ブロックの行ごとに +1 される）
 
 		for(int y = 0; y < brickCountY; y++){															
 			for(int x = -(brickCountX / 2); x < (brickCountX / 2); x++){
-				Vector3 pos = new Vector3(0.8f + (x * 1.6f), 1 + (y * 0.4f), 0);						//The 'pos' variable is where the brick will spawn at
-				GameObject brick = Instantiate(brickPrefab, pos, Quaternion.identity) as GameObject;	//Creates a new brick game object at the 'pos' value
-				brick.GetComponent<Brick>().manager = this;												//Gets the 'Brick' component of the game object and sets its 'manager' variable to this the GameManager
-				brick.GetComponent<SpriteRenderer>().color = colors[colorId];							//Gets the 'SpriteRenderer' component of the brick object and sets the color
-				bricks.Add(brick);																		//Adds the new brick object to the 'bricks' list
+				Vector3 pos = new Vector3(0.8f + (x * 1.6f), 1 + (y * 0.4f), 0);						// ブロックが生成される位置
+				GameObject brick = Instantiate(brickPrefab, pos, Quaternion.identity) as GameObject;	// pos の位置に新しいブロックを生成
+				brick.GetComponent<Brick>().manager = this;												// Brick コンポーネントを取得し、GameManager を設定
+				brick.GetComponent<SpriteRenderer>().color = colors[colorId];							// ブロックの色を設定
+				bricks.Add(brick);																		// ブロックをリストに追加
 			}
 
-			colorId++;						//Increases the 'colorId' by 1 as a new row is about to be made
+			colorId++;						// 次の行に進むので色IDを 1 増やす
 
-			if(colorId == colors.Length)	//If the 'colorId' is equal to the 'colors' array length. This means there is no more colors left
-				colorId = 0;
+			if(colorId == colors.Length)	// 色配列の最後まで使い切った場合
+				colorId = 0;				// 最初の色に戻す
 		}
 
-		ball.GetComponent<Ball>().ResetBall();	//Gets the 'Ball' component of the ball game object and calls the 'ResetBall()' function to set the ball in the middle of the screen
+		ball.GetComponent<Ball>().ResetBall();	// ボールを画面中央にリセットする
 	}
 
-	//Called when there is no bricks left and the player has won
+	// ブロックがすべてなくなり、ゲームクリアしたときに呼ばれる
 	public void WinGame ()
 	{
 		wonGame = true;
-		paddle.active = false;			//Disables the paddle so it's invisible
-		ball.active = false;			//Disables the ball so it's invisible
-		gameUI.SetWin();				//Set the game over UI screen
+		paddle.active = false;			// パドルを無効化（見えなくする）
+		ball.active = false;			// ボールを無効化（見えなくする）
+		gameUI.SetWin();				// ゲームクリア用UIを表示
 	}
 
-	//Called when the ball goes under the paddle and "dies"
+	// ボールがパドルの下に落ちて「ミス」したときに呼ばれる
 	public void LiveLost ()
 	{
-		lives--;										//Removes a life
+		lives--;										// ライフを 1 減らす
 
-		if(lives < 0){									//Are the lives less than 0? Are there no lives left?
+		if(lives < 0){									// ライフが 0 未満（残機なし）の場合
 			gameOver = true;
-			paddle.active = false;						//Disables the paddle so it's invisible
-			ball.active = false;						//Disables the ball so it's invisible
-			gameUI.SetGameOver();						//Set the game over UI screen
+			paddle.active = false;						// パドルを無効化
+			ball.active = false;						// ボールを無効化
+			gameUI.SetGameOver();						// ゲームオーバーUIを表示
 
-			for(int x = 0; x < bricks.Count; x++){		//Loops through the 'bricks' list
-				Destroy(bricks[x]);						//Destory the brick
+			for(int x = 0; x < bricks.Count; x++){		// bricks リストを順に処理
+				Destroy(bricks[x]);						// ブロックを破壊
 			}
 
-			bricks = new List<GameObject>();			//Resets the 'bricks' list variable
+			bricks = new List<GameObject>();			// bricks リストを初期化
 		}
 	}
 }

@@ -3,40 +3,46 @@ using System.Collections;
 
 public class Paddle : MonoBehaviour 
 {
-	public float speed;				//The amount of units the paddle will move a second
-	public float minX;				//The minimum x position that the paddle can move to
-	public float maxX;				//The maximum x position that the paddle can move to
-	public bool canMove;			//Determins wether or not the paddle can move
-	public Rigidbody2D rig;			//The paddle's rigidbody 2D component
+	public float speed;				// パドルが1秒間に移動する距離
+	public float minX;				// パドルが移動できる最小のX座標
+	public float maxX;				// パドルが移動できる最大のX座標
+	public bool canMove;			// パドルが移動可能かどうか
+	public Rigidbody2D rig;			// パドルの Rigidbody2D コンポーネント
 
 	void Update ()
 	{
-		if(canMove){															//Is the paddle able to move?
-			if(Input.GetKey(KeyCode.LeftArrow)){								//Is the left arrow key currently being pressed
-				rig.linearVelocity = new Vector2(-1 * speed * Time.deltaTime, 0);		//Set the paddle's rigidbody velocity to move left
+		if(canMove){															// パドルは移動可能か？
+			if(Input.GetKey(KeyCode.LeftArrow)){								// 左矢印キーが押されているか？
+				rig.linearVelocity = new Vector2(-1 * speed * Time.deltaTime, 0);	// 左方向へ移動させる
 			}
-			else if(Input.GetKey(KeyCode.RightArrow)){							//Is the right arrow key currently being pressed
-				rig.linearVelocity = new Vector2(1 * speed * Time.deltaTime, 0);		//Set the paddle's rigidbody velocity to move right
+			else if(Input.GetKey(KeyCode.RightArrow)){							// 右矢印キーが押されているか？
+				rig.linearVelocity = new Vector2(1 * speed * Time.deltaTime, 0);	// 右方向へ移動させる
 			}
 			else{
-				rig.linearVelocity = Vector2.zero;									//If those keys arn't being pressed, set the velocity to 0
+				rig.linearVelocity = Vector2.zero;								// キーが押されていない場合は停止
 			}
 
-			transform.position = new Vector3(Mathf.Clamp(transform.position.x, minX, maxX), transform.position.y, 0);	//Clamps the position so that it doesn't go below the 'minX' or past the 'maxX' values
+			// X座標が minX～maxX の範囲を超えないように制限する
+			transform.position = new Vector3(
+				Mathf.Clamp(transform.position.x, minX, maxX),
+				transform.position.y,
+				0
+			);
 		}
 	}
 
-	//Called whenever a trigger has entered this objects BoxCollider2D. The value 'col' is the Collider2D object that has interacted with this one
+	// 他のオブジェクトがこのオブジェクトの BoxCollider2D（Trigger）に入ったときに呼ばれる
+	// 引数 col は衝突した Collider2D オブジェクト
 	void OnTriggerEnter2D (Collider2D col)
 	{
-		if(col.gameObject.tag == "Ball"){											//Is the colliding object got the tag "Ball"?
-			col.gameObject.GetComponent<Ball>().SetDirection(transform.position);	//Get the 'Ball' component of the colliding object and call the 'SetDirection()' function to bounce the ball of the paddle
+		if(col.gameObject.tag == "Ball"){											// 衝突したオブジェクトのタグが「Ball」か？
+			col.gameObject.GetComponent<Ball>().SetDirection(transform.position);	// Ball コンポーネントを取得し、パドルの位置を使ってボールを跳ね返す
 		}
 	}
 
-	//Called when the paddle needs to be reset to the middle of the screen
+	// パドルを画面中央にリセットするときに呼ばれる
 	public void ResetPaddle ()
 	{
-		transform.position = new Vector3(0, transform.position.y, 0);	//Sets the paddle's x position to 0
+		transform.position = new Vector3(0, transform.position.y, 0);	// パドルの X 座標を 0 に設定する
 	}
 }
